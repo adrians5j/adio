@@ -1,0 +1,12 @@
+{
+  "ignore": {
+    "dependencies": ["@babel/runtime"],
+    "devDependencies": true
+  },
+  "dirs": [
+    "packages/webiny-cli",
+    "packages/webiny-app-cookie-policy",
+    "packages/webiny-api-cookie-policy",
+    "packages/webiny-app-google-tag-manager"
+  ]
+}
