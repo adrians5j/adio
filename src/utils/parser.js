@@ -1,32 +1,33 @@
-import getPackageName from "require-package-name";
+import name from "require-package-name";
+import relative from "relative-require-regex";
+import { parseSync, traverse } from "@babel/core";
+const isRelative = value => relative().test(value);
 
 export default source => {
-    const regexes = [
-        /import[ ]+['"](.*)['"]/g,
-        /from[ ]+['"](.*)['"]/g,
-        /require\(['"](.*)['"]/g
-    ];
+    const ast = parseSync(source);
 
-    const results = {};
-    regexes.forEach(regex => {
-        let m;
-        while ((m = regex.exec(source)) !== null) {
-            if (m.index === regex.lastIndex) {
-                regex.lastIndex++;
+    const imports = {};
+    traverse(ast, {
+        enter(path) {
+            const { node } = path;
+            if (node.type === "ImportDeclaration") {
+                let { value } = node.source;
+                if (!isRelative(value)) {
+                    imports[name(value)] = true;
+                }
             }
 
-            const statement = m[1];
-            if (statement.startsWith(".") || statement.startsWith("/")) {
-                continue;
+            if (node.type === "CallExpression") {
+                if (node.callee.name === "require") {
+                    let { value } = node.arguments[0];
+                    if (!isRelative(value)) {
+                        imports[name(value)] = true;
+                    }
+                }
             }
-
-            const name = getPackageName(m[1]);
-            if (results[name]) {
-                continue;
-            }
-            results[name] = true;
+            const baja = node;
         }
     });
 
-    return Object.keys(results);
+    return Object.keys(imports);
 };
