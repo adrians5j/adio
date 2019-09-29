@@ -1,38 +1,36 @@
 const glob = require("glob");
 const fs = require("fs");
+const { parseSync, traverse } = require("@babel/core");
+const name = require("require-package-name");
+const relative = require("relative-require-regex");
+const isRelative = value => relative().test(value);
 
-// Package name regex.
+const extractImportsRequires = source => {
+    const ast = parseSync(source);
 
-const parseImports = source => {
-    const regexes = [
-        /import[ ]+['"]([@a-zA-Z]{1}[@a-zA-Z0-9-_./]+)['"]/g,
-        /from[ ]+['"]([@a-zA-Z]{1}[@a-zA-Z0-9-_./]+)['"]/g,
-        /require\(['"]([@a-zA-Z]{1}[@a-zA-Z0-9-_\.\/]+)['"]/g
-    ];
-
-    const results = [];
-    regexes.forEach(regex => {
-        let m;
-        while ((m = regex.exec(source)) !== null) {
-            if (m.index === regex.lastIndex) {
-                regex.lastIndex++;
+    const imports = {};
+    traverse(ast, {
+        enter(path) {
+            const { node } = path;
+            if (node.type === "ImportDeclaration") {
+                let { value } = node.source;
+                if (!isRelative(value)) {
+                    imports[name(value)] = true;
+                }
             }
 
-            const parts = m[1].split('/');
-
-            if (parts.length === 1) {
-                results.push(parts[0]);
-            } else {
-                if (parts[0].startsWith('@')) {
-                    results.push(`${parts[0]}/${parts[1]}`);
-                } else {
-                    results.push(parts[0]);
+            if (node.type === "CallExpression") {
+                if (node.callee.name === "require") {
+                    let { value } = node.arguments[0];
+                    if (!isRelative(value)) {
+                        imports[name(value)] = true;
+                    }
                 }
             }
         }
     });
 
-    return results;
+    return Object.keys(imports);
 };
 
 const isIgnoredPath = ({ path, config, packageConfig }) => {
@@ -54,7 +52,7 @@ const isIgnoredPath = ({ path, config, packageConfig }) => {
     return false;
 };
 
-module.exports = ({ dir, path, config, packageConfig }) => {
+module.exports = ({ dir, config, packageConfig }) => {
     const paths = glob.sync(dir + "/**/*.js");
     const deps = [];
     paths.forEach(path => {
@@ -63,8 +61,8 @@ module.exports = ({ dir, path, config, packageConfig }) => {
         }
 
         const src = fs.readFileSync(path, "utf8");
-        const imports = parseImports(src);
-        imports.forEach(name => {
+        const importsRequires = extractImportsRequires(src);
+        importsRequires.forEach(name => {
             // is relative import?
             if (!name || name.startsWith(".")) {
                 return true;

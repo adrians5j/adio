@@ -1,5 +1,8 @@
 const extractSrcDeps = require("./extractSrcDeps");
 const fs = require("fs");
+const path = require("path");
+const cosmiconfig = require("cosmiconfig");
+const explorer = cosmiconfig("adio");
 
 const extractDepsFromPackageJson = ({
     dependencies = {},
@@ -11,15 +14,6 @@ const extractDepsFromPackageJson = ({
         devDependencies: Object.keys(devDependencies),
         peerDependencies: Object.keys(peerDependencies)
     };
-};
-
-const getPackageConfig = ({ dir }) => {
-    const path = process.cwd() + "/" + dir + "/checkdep.config.js";
-    const exists = fs.existsSync(path);
-    if (exists) {
-        return require(path);
-    }
-    return {};
 };
 
 const extractIgnoredDepsFromConfig = (config = {}) => {
@@ -60,29 +54,37 @@ const isIgnoredDep = ({ type, dep, config, packageConfig }) => {
     return false;
 };
 
-const checkPackage = async ({ dir, config }) => {
-    let packageJson;
+module.exports = packageJsonPath => {
+    const config = {};
+
+    let packageJsonContent;
     try {
-        packageJson = JSON.parse(fs.readFileSync(dir + "/package.json", "utf8"));
+        packageJsonContent = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
     } catch (e) {
-        throw Error("Could not parse package.json located at " + dir + "/package.json");
+        throw Error("Could not parse package.json located at " + packageJsonPath + "/package.json");
     }
 
-    const packageConfig = getPackageConfig({ dir });
+    const packageConfig = explorer.searchSync(packageJsonPath) || {};
 
     const deps = {
-        src: extractSrcDeps({ dir: process.cwd() + "/" + dir, packageConfig, packageJson, config }),
-        packageJson: extractDepsFromPackageJson(packageJson)
+        src: extractSrcDeps({
+            dir: path.dirname(packageJsonPath),
+            packageConfig,
+            packageJson: packageJsonContent,
+            config
+        }),
+        packageJson: extractDepsFromPackageJson(packageJsonContent)
     };
 
+    console.log(deps);
     const output = {
-        packageJson,
-        dir,
+        packageJson: packageJsonContent,
+        dir: packageJsonPath,
         errors: {
             count: 0,
             deps: {
                 src: deps.src.filter(dep => {
-                    if (dep === packageJson.name) {
+                    if (dep === packageJsonContent.name) {
                         return false;
                     }
 
@@ -145,5 +147,3 @@ const checkPackage = async ({ dir, config }) => {
 
     return output;
 };
-
-module.exports = checkPackage;
