@@ -48,6 +48,9 @@
       "pre-commit": "lint-staged"
     }
   },
+  "bin": {
+    "adio": "src/bin/adio.js"
+  },
   "lint-staged": {
     "**/*.js": [
       "prettier --write",
@@ -60,7 +63,8 @@
     "@babel/traverse": "^7.6.2",
     "cosmiconfig": "^5.2.0",
     "relative-require-regex": "^1.0.1",
-    "require-package-name": "^2.0.1"
+    "require-package-name": "^2.0.1",
+    "yargs": "^14.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",
