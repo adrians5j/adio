@@ -38,13 +38,13 @@ class Adio {
         try {
             packageJson = fs.readFileSync(path.join(dir, "package.json"), "utf8");
         } catch (e) {
-            throw Error("Could not open package.json located at " + dir);
+            throw Error(`Could not open package.json located at ${dir}.`);
         }
 
         try {
             packageJson = JSON.parse(packageJson);
         } catch (e) {
-            throw Error("Could not parse package.json located at " + dir);
+            throw Error(`Could not parse package.json located at ${dir}.`);
         }
 
         let adioRc = explorer.searchSync(dir);
