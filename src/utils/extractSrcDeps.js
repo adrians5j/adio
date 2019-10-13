@@ -56,7 +56,7 @@ const isIgnoredPath = ({ path, instance, adioRc }) => {
     return false;
 };
 
-module.exports = ({ dir, instance, adioRc }) => {
+const extractSrcDeps = ({ dir, instance, adioRc }) => {
     const paths = glob.sync(dir + "/**/*.js");
     const deps = [];
     paths.forEach(path => {
@@ -82,4 +82,9 @@ module.exports = ({ dir, instance, adioRc }) => {
     });
 
     return deps;
+};
+
+module.exports = {
+    extractSrcDeps,
+    extractImportsRequires
 };

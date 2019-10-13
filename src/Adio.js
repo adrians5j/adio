@@ -4,7 +4,7 @@ const cosmiconfig = require("cosmiconfig");
 const fs = require("fs");
 const explorer = cosmiconfig("adio");
 const { extractDepsFromPackageJson, isIgnoredDep } = require("./utils/testPackage");
-const extractSrcDeps = require("./utils/extractSrcDeps");
+const { extractSrcDeps } = require("./utils/extractSrcDeps");
 
 class Adio {
     constructor(config) {
