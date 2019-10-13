@@ -1,0 +1,6 @@
+{
+  "ignore": {
+    "dependencies": ["@emotion/core"],
+    "devDependencies": true
+  }
+}
