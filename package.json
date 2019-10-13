@@ -60,14 +60,15 @@
     ]
   },
   "dependencies": {
-    "@babel/traverse": "^7.6.2",
+    "@babel/parser": "^7.6.4",
     "cosmiconfig": "^5.2.0",
     "relative-require-regex": "^1.0.1",
     "require-package-name": "^2.0.1",
     "yargs": "^14.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.6.2",
+    "@babel/plugin-transform-runtime": "^7.6.2",
+    "@babel/preset-env": "^7.6.3",
     "all-contributors-cli": "^5.6.0",
     "concurrently": "^4.1.0",
     "coveralls": "^3.0.2",
