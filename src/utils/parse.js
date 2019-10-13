@@ -1,6 +1,6 @@
 const parser = require("@babel/parser");
-const { default: traverse } = require("@babel/traverse");
-const name = require("require-package-name");
+const { default: babelTraverse } = require("@babel/traverse");
+const getPackageName = require("require-package-name");
 const relative = require("relative-require-regex");
 const isRelative = value => relative().test(value);
 const get = require("lodash.get");
@@ -13,28 +13,34 @@ module.exports = ({ src, config = {} }) => {
         ...config.parser
     });
 
-    const imports = {};
-    traverse(ast, {
+    const dependencies = {};
+    const push = value => {
+        if (value && !isRelative(value)) {
+            dependencies[getPackageName(value)] = true;
+        }
+    };
+
+    const traverse = get(config, "traverse");
+
+    babelTraverse(ast, {
         enter(path) {
             const { node } = path;
             if (STD_NODE_TYPES.includes(node.type)) {
-                const value = get(node, "source.value");
-                if (value && !isRelative(value)) {
-                    imports[name(value)] = true;
-                }
-                return;
+                return push(get(node, "source.value"));
             }
 
-            if (node.type === "CallExpression") {
-                if (get(node, "callee.name") === "require") {
-                    let value = get(node, "arguments.0.value");
-                    if (value && !isRelative(value)) {
-                        imports[name(value)] = true;
-                    }
-                }
+            if (node.type === "CallExpression" && get(node, "callee.name") === "require") {
+                return push(get(node, "arguments.0.value"));
             }
+
+            typeof traverse === "function" &&
+                traverse({
+                    path,
+                    isRelative,
+                    push
+                });
         }
     });
 
-    return Object.keys(imports);
+    return Object.keys(dependencies);
 };
