@@ -1,12 +1,16 @@
 const glob = require("glob");
 const fs = require("fs");
-const { parseSync, traverse } = require("@babel/core");
+const parser = require("@babel/parser");
+const { default: traverse } = require("@babel/traverse");
+
 const name = require("require-package-name");
 const relative = require("relative-require-regex");
 const isRelative = value => relative().test(value);
 
 const extractImportsRequires = source => {
-    const ast = parseSync(source);
+    const ast = parser.parse(source, {
+        sourceType: "module"
+    });
 
     const imports = {};
     traverse(ast, {
@@ -33,8 +37,8 @@ const extractImportsRequires = source => {
     return Object.keys(imports);
 };
 
-const isIgnoredPath = ({ path, config, packageConfig }) => {
-    let dirs = config.ignoredDirs || [];
+const isIgnoredPath = ({ path, instance, adioRc }) => {
+    let dirs = instance.config.ignoreDirs || [];
     for (let i = 0; i < dirs.length; i++) {
         let dir = dirs[i];
         if (path.includes(dir)) {
@@ -42,7 +46,7 @@ const isIgnoredPath = ({ path, config, packageConfig }) => {
         }
     }
 
-    dirs = packageConfig.ignoredDirs || [];
+    dirs = adioRc.ignoreDirs || [];
     for (let i = 0; i < dirs.length; i++) {
         let dir = dirs[i];
         if (path.includes(dir)) {
@@ -52,11 +56,11 @@ const isIgnoredPath = ({ path, config, packageConfig }) => {
     return false;
 };
 
-module.exports = ({ dir, config, packageConfig }) => {
+module.exports = ({ dir, instance, adioRc }) => {
     const paths = glob.sync(dir + "/**/*.js");
     const deps = [];
     paths.forEach(path => {
-        if (isIgnoredPath({ path, config, packageConfig })) {
+        if (isIgnoredPath({ path, instance, adioRc })) {
             return true;
         }
 

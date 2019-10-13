@@ -1,3 +1,3 @@
-import Adio from "./Adio";
+const Adio = require("./Adio");
 
-export default Adio;
+module.exports = Adio;
