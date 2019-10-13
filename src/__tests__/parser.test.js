@@ -1,9 +1,9 @@
-import { extractImportsRequires } from "adio/utils/extractSrcDeps";
+import parse from "adio/utils/parse";
 import mockImports from "./mocks/multiple.imports";
 import mockRequires from "./mocks/multiple.requires";
 
 test("must correctly return all imported packages", () => {
-    const packages = extractImportsRequires(mockImports);
+    const packages = parse({ src: mockImports });
 
     expect(packages).toEqual([
         "react",
@@ -18,7 +18,7 @@ test("must correctly return all imported packages", () => {
 });
 
 test("must correctly return all required packages", () => {
-    const packages = extractImportsRequires(mockRequires);
+    const packages = parse({ src: mockRequires });
 
     expect(packages).toEqual([
         "react",

@@ -10,4 +10,5 @@ export default `
     import withId from "@commodo/fields-storage/utils/withId";
     export * from "repropose";
     export { default as testDefaultExport } from "testing-default-exports-pckg";
+    export const resolveGetSettings = () => {};
 `;

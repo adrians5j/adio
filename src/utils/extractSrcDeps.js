@@ -1,45 +1,10 @@
 const glob = require("glob");
 const fs = require("fs");
-const parser = require("@babel/parser");
-const { default: traverse } = require("@babel/traverse");
-const name = require("require-package-name");
-const relative = require("relative-require-regex");
-const isRelative = value => relative().test(value);
-
-const STD_NODE_TYPES = ["ImportDeclaration", "ExportNamedDeclaration", "ExportAllDeclaration"];
-
-const extractImportsRequires = source => {
-    const ast = parser.parse(source, {
-        sourceType: "module"
-    });
-
-    const imports = {};
-    traverse(ast, {
-        enter(path) {
-            const { node } = path;
-            if (STD_NODE_TYPES.includes(node.type)) {
-                let { value } = node.source;
-                if (!isRelative(value)) {
-                    imports[name(value)] = true;
-                }
-            }
-
-            if (node.type === "CallExpression") {
-                if (node.callee.name === "require") {
-                    let { value } = node.arguments[0];
-                    if (!isRelative(value)) {
-                        imports[name(value)] = true;
-                    }
-                }
-            }
-        }
-    });
-
-    return Object.keys(imports);
-};
+const get = require("lodash.get");
+const parse = require("./parse");
 
 const isIgnoredPath = ({ path, instance, adioRc }) => {
-    let dirs = instance.config.ignoreDirs || [];
+    let dirs = get(instance, "config.ignoreDirs") || [];
     for (let i = 0; i < dirs.length; i++) {
         let dir = dirs[i];
         if (path.includes(dir)) {
@@ -47,20 +12,18 @@ const isIgnoredPath = ({ path, instance, adioRc }) => {
         }
     }
 
-    if (adioRc) {
-        dirs = adioRc.ignoreDirs || [];
-        for (let i = 0; i < dirs.length; i++) {
-            let dir = dirs[i];
-            if (path.includes(dir)) {
-                return true;
-            }
+    dirs = get(adioRc, "ignoreDirs") || [];
+    for (let i = 0; i < dirs.length; i++) {
+        let dir = dirs[i];
+        if (path.includes(dir)) {
+            return true;
         }
     }
 
     return false;
 };
 
-const extractSrcDeps = ({ dir, instance, adioRc }) => {
+module.exports = ({ dir, instance, adioRc }) => {
     const paths = glob.sync(dir + "/**/*.js");
     const deps = [];
     paths.forEach(path => {
@@ -69,7 +32,16 @@ const extractSrcDeps = ({ dir, instance, adioRc }) => {
         }
 
         const src = fs.readFileSync(path, "utf8");
-        const importsRequires = extractImportsRequires(src);
+        const importsRequires = parse({
+            src,
+            config: {
+                parser: {
+                    ...get(instance, "config.parser", {}),
+                    ...get(adioRc, "parser", {})
+                }
+            }
+        });
+
         importsRequires.forEach(name => {
             // is relative import?
             if (!name || name.startsWith(".")) {
@@ -86,9 +58,4 @@ const extractSrcDeps = ({ dir, instance, adioRc }) => {
     });
 
     return deps;
-};
-
-module.exports = {
-    extractSrcDeps,
-    extractImportsRequires
 };
