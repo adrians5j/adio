@@ -41,7 +41,10 @@ class Adio {
             throw Error("Could not parse package.json located at " + dir);
         }
 
-        const adioRc = (explorer.searchSync(dir) || {}).config;
+        let adioRc = explorer.searchSync(dir);
+        if (adioRc) {
+            adioRc = adioRc.config;
+        }
 
         const deps = {
             src: extractSrcDeps({

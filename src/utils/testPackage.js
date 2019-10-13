@@ -21,15 +21,19 @@ const extractIgnoredDepsFromConfig = (config = {}) => {
 };
 
 const isIgnoredDep = ({ type, dep, instance, adioRc }) => {
-    let ignored = extractIgnoredDepsFromConfig(adioRc);
+    let ignored;
 
-    if (ignored[type]) {
-        if (ignored[type] === true) {
-            return true;
-        }
+    if (adioRc) {
+        ignored = extractIgnoredDepsFromConfig(adioRc);
 
-        if (Array.isArray(ignored[type]) && ignored[type].includes(dep)) {
-            return true;
+        if (ignored[type]) {
+            if (ignored[type] === true) {
+                return true;
+            }
+
+            if (Array.isArray(ignored[type]) && ignored[type].includes(dep)) {
+                return true;
+            }
         }
     }
 
