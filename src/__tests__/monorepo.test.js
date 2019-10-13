@@ -42,7 +42,7 @@ test("must correctly detect all inconsistencies in a monorepo", () => {
         },
         {
             "packageJson": {
-                "name": "c",
+                "name": "b",
                 "version": "1.0.0",
                 "main": "index.js",
                 "license": "MIT",
@@ -64,6 +64,26 @@ test("must correctly detect all inconsistencies in a monorepo", () => {
                     "dependencies": [
                         "lodash"
                     ],
+                    "devDependencies": [],
+                    "peerDependencies": []
+                }
+            }
+        },
+        {
+            "packageJson": {
+                "name": "c",
+                "version": "1.0.0",
+                "main": "index.js",
+                "license": "MIT"
+            },
+            "dir": "/Users/adrian/dev/adio/src/__tests__/mocks/monorepo/packages/c",
+            "errors": {
+                "count": 1,
+                "deps": {
+                    "src": [
+                        "os"
+                    ],
+                    "dependencies": [],
                     "devDependencies": [],
                     "peerDependencies": []
                 }
