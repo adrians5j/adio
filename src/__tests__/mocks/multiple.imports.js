@@ -8,4 +8,6 @@ export default `
     import createField from "@commodo/fields/fields/createField";
     import relFile from "./relFile";
     import withId from "@commodo/fields-storage/utils/withId";
+    export * from "repropose";
+    export { default as testDefaultExport } from "testing-default-exports-pckg";
 `;

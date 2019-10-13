@@ -55,10 +55,11 @@ test("must correctly detect all inconsistencies in a monorepo", () => {
             },
             "dir": "/Users/adrian/dev/adio/src/__tests__/mocks/monorepo/packages/b",
             "errors": {
-                "count": 2,
+                "count": 3,
                 "deps": {
                     "src": [
-                        "sanitize-filename"
+                        "sanitize-filename",
+                        "repropose"
                     ],
                     "dependencies": [
                         "lodash"

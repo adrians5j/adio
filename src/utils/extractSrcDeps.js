@@ -6,6 +6,8 @@ const name = require("require-package-name");
 const relative = require("relative-require-regex");
 const isRelative = value => relative().test(value);
 
+const STD_NODE_TYPES = ["ImportDeclaration", "ExportNamedDeclaration", "ExportAllDeclaration"];
+
 const extractImportsRequires = source => {
     const ast = parser.parse(source, {
         sourceType: "module"
@@ -15,21 +17,7 @@ const extractImportsRequires = source => {
     traverse(ast, {
         enter(path) {
             const { node } = path;
-            if (node.type === "ImportDeclaration") {
-                let { value } = node.source;
-                if (!isRelative(value)) {
-                    imports[name(value)] = true;
-                }
-            }
-
-            if (node.type === "ExportNamedDeclaration") {
-                let { value } = node.source;
-                if (!isRelative(value)) {
-                    imports[name(value)] = true;
-                }
-            }
-
-            if (node.type === "ExportAllDeclaration") {
+            if (STD_NODE_TYPES.includes(node.type)) {
                 let { value } = node.source;
                 if (!isRelative(value)) {
                     imports[name(value)] = true;
@@ -44,7 +32,6 @@ const extractImportsRequires = source => {
                     }
                 }
             }
-
         }
     });
 
