@@ -11,7 +11,9 @@ test("must correctly return all imported packages", () => {
         "lodash",
         "bytes",
         "@commodo/fields",
-        "@commodo/fields-storage"
+        "@commodo/fields-storage",
+        "repropose",
+        "testing-default-exports-pckg"
     ]);
 });
 

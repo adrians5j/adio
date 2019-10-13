@@ -2,7 +2,6 @@ const glob = require("glob");
 const fs = require("fs");
 const parser = require("@babel/parser");
 const { default: traverse } = require("@babel/traverse");
-
 const name = require("require-package-name");
 const relative = require("relative-require-regex");
 const isRelative = value => relative().test(value);
@@ -23,6 +22,20 @@ const extractImportsRequires = source => {
                 }
             }
 
+            if (node.type === "ExportNamedDeclaration") {
+                let { value } = node.source;
+                if (!isRelative(value)) {
+                    imports[name(value)] = true;
+                }
+            }
+
+            if (node.type === "ExportAllDeclaration") {
+                let { value } = node.source;
+                if (!isRelative(value)) {
+                    imports[name(value)] = true;
+                }
+            }
+
             if (node.type === "CallExpression") {
                 if (node.callee.name === "require") {
                     let { value } = node.arguments[0];
@@ -31,6 +44,7 @@ const extractImportsRequires = source => {
                     }
                 }
             }
+
         }
     });
 
@@ -46,13 +60,16 @@ const isIgnoredPath = ({ path, instance, adioRc }) => {
         }
     }
 
-    dirs = adioRc.ignoreDirs || [];
-    for (let i = 0; i < dirs.length; i++) {
-        let dir = dirs[i];
-        if (path.includes(dir)) {
-            return true;
+    if (adioRc) {
+        dirs = adioRc.ignoreDirs || [];
+        for (let i = 0; i < dirs.length; i++) {
+            let dir = dirs[i];
+            if (path.includes(dir)) {
+                return true;
+            }
         }
     }
+
     return false;
 };
 
