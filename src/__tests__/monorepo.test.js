@@ -61,7 +61,7 @@ test("must correctly detect all inconsistencies in a monorepo", () => {
                     "@babel/runtime": "^7.6.3"
                 }
             },
-            dir: "/Users/adrian/dev/adio/src/__tests__/mocks/monorepo/packages/a",
+            dir: path.join(__dirname, "/mocks/monorepo/packages/a"),
             errors: {
                 count: 0,
                 deps: {
@@ -85,7 +85,7 @@ test("must correctly detect all inconsistencies in a monorepo", () => {
                     "@babel/runtime": "^7.6.3"
                 }
             },
-            dir: "/Users/adrian/dev/adio/src/__tests__/mocks/monorepo/packages/b",
+            dir: path.join(__dirname, "/mocks/monorepo/packages/b"),
             errors: {
                 count: 3,
                 deps: {
@@ -103,7 +103,7 @@ test("must correctly detect all inconsistencies in a monorepo", () => {
                 main: "index.js",
                 license: "MIT"
             },
-            dir: "/Users/adrian/dev/adio/src/__tests__/mocks/monorepo/packages/c",
+            dir: path.join(__dirname, "/mocks/monorepo/packages/c"),
             errors: {
                 count: 1,
                 deps: {
