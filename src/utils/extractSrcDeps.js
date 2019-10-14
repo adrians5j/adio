@@ -36,9 +36,9 @@ module.exports = ({ dir, instance, adioRc }) => {
             src,
             config: {
                 parser: {
-                    ...get(instance, "config.parser", {}),
-                    ...get(adioRc, "parser", {})
-                }
+                    ...get(adioRc, "parser", get(instance, "config.parser", {}))
+                },
+                traverse: get(adioRc, "traverse", get(instance, "config.traverse"))
             }
         });
 
