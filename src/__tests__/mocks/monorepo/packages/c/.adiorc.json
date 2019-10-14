@@ -1,6 +1,0 @@
-{
-  "ignoreDirs": [
-    "/node-modules/",
-    "/something/ignoredDir/"
-  ]
-}
