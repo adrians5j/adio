@@ -14,7 +14,7 @@ try {
     const packagesWithErrors = results.filter(r => r.errors.count);
     if (packagesWithErrors.length === 0) {
         console.log(chalk.green("✅  All dependencies in order!"));
-        return process.exit(0);
+        process.exit(0);
     }
 
     packagesWithErrors.forEach((pckg, index) => {
