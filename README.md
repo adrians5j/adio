@@ -8,7 +8,9 @@
 [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
   
-Checks if the dependencies in package.json and in the actual code are synced. 
+`adio` (all-dependencies-in-order) is a small library that checks your code
+for dependencies that are not listed in the package.json and vice-versa,
+checks package.json files for dependencies that are not used in code. 
 
 ## Install
 ```
@@ -19,6 +21,53 @@ Or if you prefer yarn:
 ```
 yarn add adio
 ```
+
+## Basic usage
+Once you've installed the library, you can run the `adio` command like
+so:
+
+```adio --packages "components/*" --packages "packages/*"```
+
+This will check all folders located in `packages` folder, eg. 
+`packages/something-1` and `packages/something-2`. If all dependencies
+are in order, the process will exit with the exit code `0`, and will 
+print a success message. Otherwise, the exit code `1` will be returned, 
+and a list of all issues will be printed in the console.
+
+## Configuration files
+Even though it can be done via the CLI, parameters can also
+be set via the `.adiorc.js` or similar `cosmiconfig` supported config 
+types (eg. `.adiorc.json` or even via the `adio` key in `package.json`), 
+placed in the current working directory. This is often a better 
+alternative to passing parameters inline via the CLI.
+
+By just creating a following `.adiorc.json` file in the current working
+directory...
+
+```json
+{
+  "packages": ["packages/*", "components/*", "..."]
+}
+```
+
+and then running the `adio` command in the same directory, we can 
+achieve the same effect as by manually running the previsuly shown 
+`adio --packages "components/*" --packages "packages/*"` command.
+
+This way will also make it easier to pass in additional config parameters.
+
+## Additional configuration parameters and overriding
+
+## Parameters reference
+The following shows 
+
+## Contributors
+
+Thanks goes to these wonderful people
+
+
+
+ 
 
 ## Contributors
 
