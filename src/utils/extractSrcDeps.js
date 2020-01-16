@@ -24,7 +24,13 @@ const isIgnoredPath = ({ path, instance, adioRc }) => {
 };
 
 module.exports = ({ dir, instance, adioRc }) => {
-    const paths = glob.sync(dir + "/**/*.js");
+    const fileExtensions = ['js', 'ts', 'tsx'];
+    const paths = [];
+    for (let i = 0; i < fileExtensions.length; i++) {
+        let fileExtension = fileExtensions[i];
+        paths.push(...glob.sync(dir + `/**/*.${fileExtension}`));
+    }
+
     const deps = [];
     paths.forEach(path => {
         if (isIgnoredPath({ path, instance, adioRc })) {
