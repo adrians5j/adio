@@ -33,6 +33,7 @@ module.exports = ({ dir, instance, adioRc }) => {
 
         const src = fs.readFileSync(path, "utf8");
         const importsRequires = parse({
+            path,
             src,
             config: {
                 parser: {
