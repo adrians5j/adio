@@ -20,8 +20,8 @@ class Adio {
             glob.sync(dir, {
                 cwd: this.config.cwd,
                 ignore: ignoreDirs
-            }).forEach(packageJsonPath => {
-                packages.push(path.join(this.config.cwd, packageJsonPath));
+            }).forEach(packageJsonDir => {
+                packages.push(path.join(this.config.cwd, packageJsonDir));
             });
         });
 
