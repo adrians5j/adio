@@ -18,7 +18,7 @@ try {
     }
 
     packagesWithErrors.forEach((pckg, index) => {
-        console.log(chalk.red(`${index + 1}. ${pckg.packageJson.name} (${pckg.dir})`));
+        console.log(chalk.red(`${index + 1}. ${pckg.packageJson.name || "🚨Package name missing."} (${pckg.dir})`));
 
         if (pckg.errors.deps.src.length) {
             console.log(chalk.cyan("Packages used in source code, but not listed in package.json:"));
