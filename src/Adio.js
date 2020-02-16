@@ -25,6 +25,13 @@ class Adio {
             });
         });
 
+        if (packages.length === 0) {
+            throw new Error(`No packages detected.
+Did you specify the correct path via the --package or --packages params?
+For example: adio --package=src/my-package
+Hint: you can also specify these params via the .adiorc.js config or package.json.`);
+        }
+
         const checks = [];
         for (let i = 0; i < packages.length; i++) {
             checks.push(this.testPackage(packages[i]));
