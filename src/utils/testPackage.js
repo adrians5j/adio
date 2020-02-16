@@ -1,3 +1,5 @@
+const NODEJS_SYSTEM_PACKAGES = ["path", "os", "fs", "util", "events", "crypto"];
+
 const extractDepsFromPackageJson = ({
     dependencies = {},
     devDependencies = {},
@@ -20,7 +22,12 @@ const extractIgnoredDepsFromConfig = (config = {}) => {
     };
 };
 
+
 const isIgnoredDep = ({ type, dep, instance, adioRc }) => {
+    if (NODEJS_SYSTEM_PACKAGES.includes(dep)) {
+        return true;
+    }
+
     let ignored;
 
     if (adioRc) {
