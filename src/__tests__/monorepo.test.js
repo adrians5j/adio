@@ -105,9 +105,9 @@ test("must correctly detect all inconsistencies in a monorepo", () => {
             },
             dir: path.join(__dirname, "/mocks/monorepo/packages/c"),
             errors: {
-                count: 1,
+                count: 0,
                 deps: {
-                    src: ["os"],
+                    src: [],
                     dependencies: [],
                     devDependencies: [],
                     peerDependencies: []
