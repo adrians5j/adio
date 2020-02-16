@@ -36,7 +36,7 @@ and a list of all issues will be printed in the console.
 
 ## Configuration files
 Even though it can be done via the CLI, parameters can also
-be set via the `.adiorc.js` or similar `cosmiconfig` supported config 
+be set via the `.adiorc.js` or similar [cosmiconfig](https://www.npmjs.com/package/cosmiconfig) supported config 
 types (eg. `.adiorc.json` or even via the `adio` key in `package.json`), 
 placed in the current working directory. This is often a better 
 alternative to passing parameters inline via the CLI.
