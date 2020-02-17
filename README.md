@@ -12,7 +12,9 @@
 for dependencies that are not listed in the package.json and vice-versa,
 checks package.json files for dependencies that are not used in code. 
 
-![Preview](./docs/preview.png)
+<p align="center">
+  <img src="./docs/preview.png"/>
+</p>
 
 ## Install
 ```
