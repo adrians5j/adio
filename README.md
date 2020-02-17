@@ -12,6 +12,8 @@
 for dependencies that are not listed in the package.json and vice-versa,
 checks package.json files for dependencies that are not used in code. 
 
+![Preview](./docs/preview.png)
+
 ## Install
 ```
 npm install --save adio
