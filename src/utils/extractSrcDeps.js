@@ -2,6 +2,7 @@ const glob = require("glob");
 const fs = require("fs");
 const get = require("lodash.get");
 const parse = require("./parse");
+const defaultParserPlugins = require('./defaultParserPlugins');
 
 const isIgnoredPath = ({ path, instance, adioRc }) => {
     let dirs = get(instance, "config.ignoreDirs") || [];
@@ -43,7 +44,11 @@ module.exports = ({ dir, instance, adioRc }) => {
             src,
             config: {
                 parser: {
-                    ...get(adioRc, "parser", get(instance, "config.parser", {}))
+                    ...get(adioRc, "parser", get(instance, "config.parser", {})),
+                    // include commonly needed plugins
+                    plugins: defaultParserPlugins(
+                        get(adioRc, "parser.plugins", get(instance, "config.parser.plugins", []))
+                    )
                 },
                 traverse: get(adioRc, "traverse", get(instance, "config.traverse"))
             }
