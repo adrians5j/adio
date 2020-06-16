@@ -59,7 +59,44 @@ achieve the same effect as by manually running the previsuly shown
 
 This way will also make it easier to pass in additional config parameters.
 
-## Additional configuration parameters and overriding
+## Additional configuration parameters
+
+- **ignoreDirs**: Array containing directories to ignore. By default, `adio` ignores `['node_modules']`
+- **ignore**: Object containing dependencies for `adio` to ignore.
+  - **src**: dependencies to ignore in source files. This can be an array of strings or simply `true` to ignore checking all deps in source files
+  - **dependencies**: ignore `dependencies` in `package.json`. This can be an array of strings, to ignore certain deps, or simply `true` to ignore checking all `dependencies` from `package.json`
+  - **devDependencies**: ignore `devDependencies` in `package.json`. This can be an array of strings, to ignore certain deps, or simply `true` to ignore checking all `devDependencies` from `package.json`
+  - **peerDependencies**: ignore `peerDependencies` in `package.json`. This can be an array of strings, to ignore certain deps, or simply `true` to ignore checking all `peerDependencies` from `package.json`
+- **parser**: any options to pass to `@babel/parser` see [here](https://babeljs.io/docs/en/babel-parser#options) for available options
+
+A more comprehensive `.adiorc` might look like this:
+
+```json
+{
+  "packages": ["packages/*"],
+  "ignoreDirs": ["node_modules", "dist", "coverage"],
+  "ignore": {
+    "src": ["path", "url", "http"],
+    "devDependencies": true,
+    "peerDependencies": true
+  },
+  "parser": {
+    "plugins": ["typescript", "optionalChaining", "numericSeparator", "classProperties"]
+  }
+}
+```
+
+### Configuration Overriding
+
+It is common to have an `adio` configuration at the root of a monorepo. Then, say I did want `adio` to check `peerDependencies` usage in a particular package, I could extend the configuration above by adding a package local `packages/*/.adiorc` like so:
+
+```json
+{
+  "ignore": {
+    "peerDependencies": false
+  }
+}
+```
 
 ## Parameters reference
 The following shows 
