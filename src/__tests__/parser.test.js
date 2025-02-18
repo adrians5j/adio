@@ -1,6 +1,6 @@
-import parse from "adio/utils/parse";
-import mockImports from "./mocks/multiple.imports";
-import mockRequires from "./mocks/multiple.requires";
+import parse from "../utils/parse.js";
+import mockImports from "./mocks/multiple.imports.js";
+import mockRequires from "./mocks/multiple.requires.js";
 
 test("must correctly return all imported packages", () => {
     const packages = parse({ src: mockImports });

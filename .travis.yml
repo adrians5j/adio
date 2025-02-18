@@ -1,27 +1,25 @@
 sudo: false
 language: node_js
-node_js: 8
+node_js: 20
 
 cache:
-  directories:
-    - ~/.npm
-    - ~/.cache
+    directories:
+        - ~/.npm
+        - ~/.cache
 
 notifications:
-  email: false
+    email: false
 
 jobs:
-  include:
-    - stage: test
-      script:
-        - npm run test:jest:dist
-    - stage: release
-      node_js: lts/*
-      script:
-        - npm run test:jest:src:coverage:coveralls
-        - npm run build
-      deploy:
-        provider: script
-        skip_cleanup: true
-        script:
-          - npm run release
+    include:
+        - stage: test
+          script:
+              - npm run test
+        - stage: release
+          node_js: lts/*
+          script:
+              - yarn run test:coverage:coveralls
+          deploy:
+              provider: script
+              skip_cleanup: true
+              script: yarn release

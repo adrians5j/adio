@@ -1,8 +1,8 @@
-const glob = require("glob");
-const fs = require("fs");
-const get = require("lodash.get");
-const parse = require("./parse");
-const defaultParserPlugins = require('./defaultParserPlugins');
+import glob from "glob";
+import fs from "fs";
+import get from "lodash.get";
+import parse from "./parse.js";
+import { defaultParserPlugins } from "./defaultParserPlugins.js";
 
 const isIgnoredPath = ({ path, instance, adioRc }) => {
     let dirs = get(instance, "config.ignoreDirs") || [];
@@ -24,8 +24,8 @@ const isIgnoredPath = ({ path, instance, adioRc }) => {
     return false;
 };
 
-module.exports = ({ dir, instance, adioRc }) => {
-    const fileExtensions = ['js', 'ts', 'tsx'];
+export default ({ dir, instance, adioRc }) => {
+    const fileExtensions = ["js", "ts", "tsx"];
     const paths = [];
     for (let i = 0; i < fileExtensions.length; i++) {
         let fileExtension = fileExtensions[i];

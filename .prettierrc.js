@@ -1,5 +1,6 @@
-module.exports = {
+export default {
     printWidth: 100,
-    parser: "babylon",
-    tabWidth: 4
+    trailingComma: "none",
+    tabWidth: 4,
+    arrowParens: "avoid"
 };

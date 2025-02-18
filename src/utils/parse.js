@@ -1,14 +1,16 @@
-const parser = require("@babel/parser");
-const { default: babelTraverse } = require("@babel/traverse");
-const getPackageName = require("require-package-name");
-const relative = require("relative-require-regex");
+import parser from "@babel/parser";
+import babelCjs from "@babel/traverse";
+import getPackageName from "require-package-name";
+import relative from "relative-require-regex";
+import get from "lodash.get";
+import chalk from "chalk";
+
+const babelTraverse = babelCjs.default;
 const isRelative = value => relative().test(value);
-const get = require("lodash.get");
-const chalk = require("chalk");
 
 const STD_NODE_TYPES = ["ImportDeclaration", "ExportNamedDeclaration", "ExportAllDeclaration"];
 
-module.exports = ({ src, path, config = {} }) => {
+export default ({ src, path, config = {} }) => {
     try {
         const ast = parser.parse(src, {
             sourceType: "module",
