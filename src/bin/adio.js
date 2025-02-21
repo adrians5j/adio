@@ -1,5 +1,5 @@
 #! /usr/bin/env node
-import { argv } from "yargs";
+import yargs from "yargs";
 import chalk from "chalk";
 import { Adio } from "../Adio.js";
 import { cosmiconfig } from "cosmiconfig";
@@ -9,7 +9,7 @@ import { cosmiconfig } from "cosmiconfig";
     const rootConfig = (await explorer.search(process.cwd())) || {};
 
     try {
-        const adio = new Adio({ ...rootConfig.config, ...argv });
+        const adio = new Adio({ ...rootConfig.config, ...yargs.argv });
         const results = await adio.test();
 
         const packagesWithErrors = results.filter(r => r.errors.count);
