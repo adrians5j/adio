@@ -1,6 +1,6 @@
 const NODEJS_SYSTEM_PACKAGES = ["path", "os", "fs", "util", "events", "crypto"];
 
-const extractDepsFromPackageJson = ({
+export const extractDepsFromPackageJson = ({
     dependencies = {},
     devDependencies = {},
     peerDependencies = {}
@@ -12,7 +12,7 @@ const extractDepsFromPackageJson = ({
     };
 };
 
-const extractIgnoredDepsFromConfig = (config = {}) => {
+export const extractIgnoredDepsFromConfig = (config = {}) => {
     const ignore = config.ignore || {};
     return {
         src: ignore.src || [],
@@ -23,7 +23,7 @@ const extractIgnoredDepsFromConfig = (config = {}) => {
 };
 
 
-const isIgnoredDep = ({ type, dep, instance, adioRc }) => {
+export const isIgnoredDep = ({ type, dep, instance, adioRc }) => {
     if (NODEJS_SYSTEM_PACKAGES.includes(dep)) {
         return true;
     }
@@ -57,10 +57,4 @@ const isIgnoredDep = ({ type, dep, instance, adioRc }) => {
     }
 
     return false;
-};
-
-module.exports = {
-    extractDepsFromPackageJson,
-    extractIgnoredDepsFromConfig,
-    isIgnoredDep
 };

@@ -1,17 +1,18 @@
-const glob = require("glob");
-const path = require("path");
-const cosmiconfig = require("cosmiconfig");
-const fs = require("fs");
-const explorer = cosmiconfig("adio");
-const { extractDepsFromPackageJson, isIgnoredDep } = require("./utils/testPackage");
-const extractSrcDeps = require("./utils/extractSrcDeps");
+import glob from "glob";
+import path from "path";
+import { cosmiconfig } from "cosmiconfig";
+import fs from "fs";
+import { extractDepsFromPackageJson, isIgnoredDep } from "./utils/testPackage.js";
+import extractSrcDeps from "./utils/extractSrcDeps.js";
 
-class Adio {
+const explorer = cosmiconfig("adio");
+
+export class Adio {
     constructor(config) {
         this.config = { ignoreDirs: ["node_modules"], cwd: process.cwd(), ...config };
     }
 
-    test() {
+    async test() {
         const { ignoreDirs } = this.config;
 
         const normalizedPackagesList = this.__normalizePackagesList();
@@ -32,15 +33,10 @@ For example: adio --package=src/my-package
 Hint: you can also specify these params via the .adiorc.js config or package.json.`);
         }
 
-        const checks = [];
-        for (let i = 0; i < packages.length; i++) {
-            checks.push(this.testPackage(packages[i]));
-        }
-
-        return checks;
+        return Promise.all(packages.map(pkg => this.testPackage(pkg)));
     }
 
-    testPackage(dir) {
+    async testPackage(dir) {
         let packageJson;
         try {
             packageJson = fs.readFileSync(path.join(dir, "package.json"), "utf8");
@@ -54,7 +50,7 @@ Hint: you can also specify these params via the .adiorc.js config or package.jso
             throw Error(`Could not parse package.json located at ${dir}.`);
         }
 
-        let adioRc = explorer.searchSync(dir);
+        let adioRc = await explorer.search(dir);
         if (adioRc) {
             adioRc = adioRc.config;
         }
@@ -156,5 +152,3 @@ Hint: you can also specify these params via the .adiorc.js config or package.jso
         return normalizedPackagesList;
     }
 }
-
-module.exports = Adio;
