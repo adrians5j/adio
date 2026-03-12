@@ -1,7 +1,7 @@
 /**
  * Add node: prefix to all system packages.
  */
-const NODEJS_SYSTEM_PACKAGES = ["path", "os", "fs", "util", "events", "crypto"].reduce(
+const NODEJS_SYSTEM_PACKAGES = ["path", "os", "fs", "util", "events", "crypto", "url"].reduce(
     (items, pkg) => {
         items.push(pkg);
         items.push(`node:${pkg}`);
