@@ -36,7 +36,9 @@
         "test:coverage:coveralls": "yarn test:coverage && cat ./coverage/lcov.info | coveralls",
         "release": "yarn semantic-release",
         "lint-staged": "lint-staged",
-        "semantic-release": "semantic-release"
+        "semantic-release": "semantic-release",
+        "prettier": "prettier --check \"**/*.{js,json}\"",
+        "prettier:fix": "prettier --write \"**/*.{js,json}\""
     },
     "pre-commit": [
         "lint-staged"
