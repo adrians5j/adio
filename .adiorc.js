@@ -49,23 +49,7 @@ export default {
             "url",
             "worker_threads"
         ],
-        dependencies: [
-            "@babel/runtime",
-            // Packages below are defined as peerDependencies in many 3rd party packages
-            // and make yarn go crazy with warnings. We define these packages as "dependencies"
-            // in our own packages, but we don't directly use them:
-            "@emotion/react",
-            "@svgr/webpack",
-            "@types/react",
-            "@webiny/cli",
-            "prop-types",
-            "apollo-cache",
-            "apollo-client",
-            "apollo-link",
-            "apollo-utilities",
-            "graphql",
-            "react-dom"
-        ],
+        dependencies: [],
         devDependencies: true,
         peerDependencies: true
     },
