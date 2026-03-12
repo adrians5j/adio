@@ -71,7 +71,7 @@
         "lodash.get": "^4.4.2",
         "relative-require-regex": "^1.0.1",
         "require-package-name": "^2.0.1",
-        "yargs": "^17.7.2"
+        "yargs": "^18.0.0"
     },
     "devDependencies": {
         "@babel/cli": "^7.28.6",
