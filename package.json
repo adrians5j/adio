@@ -63,6 +63,7 @@
     "dependencies": {
         "@babel/parser": "^7.6.4",
         "cosmiconfig": "^9.0.0",
+        "glob": "^13.0.6",
         "lodash.get": "^4.4.2",
         "relative-require-regex": "^1.0.1",
         "require-package-name": "^2.0.1",
@@ -85,5 +86,5 @@
         "semantic-release": "^16.0.4",
         "wait-on": "^8.0.2"
     },
-    "packageManager": "yarn@4.6.0"
+    "packageManager": "yarn@4.13.0"
 }

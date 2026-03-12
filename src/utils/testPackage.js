@@ -1,4 +1,15 @@
-const NODEJS_SYSTEM_PACKAGES = ["path", "os", "fs", "util", "events", "crypto"];
+/**
+ * Add node: prefix to all system packages.
+ */
+const NODEJS_SYSTEM_PACKAGES = ["path", "os", "fs", "util", "events", "crypto"].reduce(
+    (items, pkg) => {
+        items.push(pkg);
+        items.push(`node:${pkg}`);
+
+        return items;
+    },
+    []
+);
 
 export const extractDepsFromPackageJson = ({
     dependencies = {},
@@ -21,7 +32,6 @@ export const extractIgnoredDepsFromConfig = (config = {}) => {
         peerDependencies: ignore.peerDependencies || []
     };
 };
-
 
 export const isIgnoredDep = ({ type, dep, instance, adioRc }) => {
     if (NODEJS_SYSTEM_PACKAGES.includes(dep)) {

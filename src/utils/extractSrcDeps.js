@@ -1,4 +1,4 @@
-import glob from "glob";
+import { globSync } from "glob";
 import fs from "fs";
 import get from "lodash.get";
 import parse from "./parse.js";
@@ -29,7 +29,11 @@ export default ({ dir, instance, adioRc }) => {
     const paths = [];
     for (let i = 0; i < fileExtensions.length; i++) {
         let fileExtension = fileExtensions[i];
-        paths.push(...glob.sync(dir + `/**/*.${fileExtension}`));
+        paths.push(
+            ...globSync(dir + `/**/*.${fileExtension}`, {
+                sort: true
+            }).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
+        );
     }
 
     const deps = [];
