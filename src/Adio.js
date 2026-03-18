@@ -20,14 +20,12 @@ export class Adio {
         normalizedPackagesList.forEach(dir => {
             globSync(dir, {
                 cwd: this.config.cwd,
-                ignore: ignoreDirs,
-                sort: true
-            })
-                .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
-                .forEach(packageJsonDir => {
-                    packages.push(path.join(this.config.cwd, packageJsonDir));
-                });
+                ignore: ignoreDirs
+            }).forEach(packageJsonDir => {
+                packages.push(path.join(this.config.cwd, packageJsonDir));
+            });
         });
+        packages.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
 
         if (packages.length === 0) {
             throw new Error(`No packages detected.
