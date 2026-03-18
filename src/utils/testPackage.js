@@ -1,4 +1,4 @@
-const NODEJS_SYSTEM_PACKAGES = ["path", "os", "fs", "util", "events", "crypto"];
+import { isBuiltin } from "node:module";
 
 export const extractDepsFromPackageJson = ({
     dependencies = {},
@@ -22,9 +22,8 @@ export const extractIgnoredDepsFromConfig = (config = {}) => {
     };
 };
 
-
 export const isIgnoredDep = ({ type, dep, instance, adioRc }) => {
-    if (NODEJS_SYSTEM_PACKAGES.includes(dep)) {
+    if (isBuiltin(dep)) {
         return true;
     }
 

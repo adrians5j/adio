@@ -1,7 +1,7 @@
-import glob from "glob";
-import path from "path";
+import { globSync } from "glob";
+import path from "node:path";
 import { cosmiconfig } from "cosmiconfig";
-import fs from "fs";
+import fs from "node:fs";
 import { extractDepsFromPackageJson, isIgnoredDep } from "./utils/testPackage.js";
 import extractSrcDeps from "./utils/extractSrcDeps.js";
 
@@ -18,13 +18,14 @@ export class Adio {
         const normalizedPackagesList = this.__normalizePackagesList();
         const packages = [];
         normalizedPackagesList.forEach(dir => {
-            glob.sync(dir, {
+            globSync(dir, {
                 cwd: this.config.cwd,
                 ignore: ignoreDirs
             }).forEach(packageJsonDir => {
                 packages.push(path.join(this.config.cwd, packageJsonDir));
             });
         });
+        packages.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
 
         if (packages.length === 0) {
             throw new Error(`No packages detected.

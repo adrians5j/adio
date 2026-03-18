@@ -1,6 +1,6 @@
 export default {
     rootDir: process.cwd(),
-    testMatch: ["**/*.test.js"],
+    testMatch: ["<rootDir>/src/**/*.test.js"],
     transform: {},
     coverageReporters: ["lcov", "html"],
     coveragePathIgnorePatterns: ["__tests__", "/node_modules/"],
