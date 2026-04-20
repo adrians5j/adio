@@ -4,7 +4,10 @@ import chalk from "chalk";
 const STD_NODE_TYPES = ["ImportDeclaration", "ExportNamedDeclaration", "ExportAllDeclaration"];
 
 const packageName = value =>
-    value.split("/").slice(0, value.startsWith("@") ? 2 : 1).join("/");
+    value
+        .split("/")
+        .slice(0, value.startsWith("@") ? 2 : 1)
+        .join("/");
 
 function walk(node, onEnter) {
     if (!node || typeof node !== "object") return;

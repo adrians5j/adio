@@ -46,7 +46,8 @@
         "lint-staged": "lint-staged",
         "semantic-release": "semantic-release",
         "prettier": "prettier --check \"**/*.{js,json}\"",
-        "prettier:fix": "prettier --write \"**/*.{js,json}\""
+        "prettier:fix": "prettier --write \"**/*.{js,json}\"",
+        "format": "yarn prettier:fix"
     },
     "husky": {
         "hooks": {
