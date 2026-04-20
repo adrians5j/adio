@@ -1,6 +1,6 @@
 {
     "name": "adio",
-    "version": "3.0.0",
+    "version": "3.0.0-beta.1",
     "type": "module",
     "description": "Checks if the dependencies in package.json and in the actual code are synced.",
     "main": "src/index.js",
