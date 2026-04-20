@@ -1,26 +1,16 @@
 import { globSync } from "glob";
 import fs from "fs";
-import get from "lodash.get";
 import parse from "./parse.js";
-import { defaultParserPlugins } from "./defaultParserPlugins.js";
 
 const isIgnoredPath = ({ path, instance, adioRc }) => {
-    let dirs = get(instance, "config.ignoreDirs") || [];
+    let dirs = instance?.config?.ignoreDirs || [];
     for (let i = 0; i < dirs.length; i++) {
-        let dir = dirs[i];
-        if (path.includes(dir)) {
-            return true;
-        }
+        if (path.includes(dirs[i])) return true;
     }
-
-    dirs = get(adioRc, "ignoreDirs") || [];
+    dirs = adioRc?.ignoreDirs || [];
     for (let i = 0; i < dirs.length; i++) {
-        let dir = dirs[i];
-        if (path.includes(dir)) {
-            return true;
-        }
+        if (path.includes(dirs[i])) return true;
     }
-
     return false;
 };
 
@@ -47,28 +37,17 @@ export default ({ dir, instance, adioRc }) => {
             path,
             src,
             config: {
-                parser: {
-                    ...get(adioRc, "parser", get(instance, "config.parser", {})),
-                    // include commonly needed plugins
-                    plugins: defaultParserPlugins(
-                        get(adioRc, "parser.plugins", get(instance, "config.parser.plugins", []))
-                    )
-                },
-                traverse: get(adioRc, "traverse", get(instance, "config.traverse"))
+                traverse: adioRc?.traverse ?? instance?.config?.traverse
             }
         });
 
         importsRequires.forEach(name => {
-            // is relative import?
             if (!name || name.startsWith(".")) {
                 return true;
             }
-
-            // already included in deps?
             if (deps.includes(name)) {
                 return true;
             }
-
             deps.push(name);
         });
     });
