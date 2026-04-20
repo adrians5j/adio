@@ -1,10 +1,10 @@
 .yarn
+.idea
 coverage
-dist/__tests__/**
-dist/**/*.test.js
+dist/**
 docs
 node_modules
-src
+src/__tests__/**
 PULL_REQUEST_TEMPLATE.md
 .adiorc.js
 .eslintrc.cjs
