@@ -1,5 +1,5 @@
 import path from "node:path";
-import { rimraf } from "rimraf";
+import { rm } from "node:fs/promises";
 import extract from "extract-zip";
 import { Adio } from "../index.js";
 import { getDirname } from "./getDirname.js";
@@ -9,16 +9,16 @@ const MONOREPO = path.join(__dirname, "/mocks/monorepo");
 
 describe("monorepo tests", () => {
     beforeAll(async () => {
-        await rimraf(MONOREPO);
+        await rm(MONOREPO, { recursive: true, force: true, maxRetries: 3 });
 
         await extract(path.join(__dirname, "/mocks/monorepo.zip"), {
             dir: path.join(__dirname, "/mocks")
         });
-    });
+    }, 30000);
 
     afterAll(async () => {
-        await rimraf(MONOREPO);
-    });
+        await rm(MONOREPO, { recursive: true, force: true, maxRetries: 3 });
+    }, 30000);
 
     test("must correctly detect all inconsistencies in a monorepo", async () => {
         const adio = new Adio({
@@ -78,7 +78,7 @@ describe("monorepo tests", () => {
                 errors: {
                     count: 3,
                     deps: {
-                        src: ["sanitize-filename", "repropose"],
+                        src: ["repropose", "sanitize-filename"],
                         dependencies: ["lodash"],
                         devDependencies: [],
                         peerDependencies: []

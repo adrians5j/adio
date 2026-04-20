@@ -1,77 +1,35 @@
-import { globSync } from "glob";
-import fs from "fs";
-import get from "lodash.get";
+import { glob } from "glob";
+import { readFile } from "node:fs/promises";
 import parse from "./parse.js";
-import { defaultParserPlugins } from "./defaultParserPlugins.js";
 
 const isIgnoredPath = ({ path, instance, adioRc }) => {
-    let dirs = get(instance, "config.ignoreDirs") || [];
-    for (let i = 0; i < dirs.length; i++) {
-        let dir = dirs[i];
-        if (path.includes(dir)) {
-            return true;
-        }
-    }
-
-    dirs = get(adioRc, "ignoreDirs") || [];
-    for (let i = 0; i < dirs.length; i++) {
-        let dir = dirs[i];
-        if (path.includes(dir)) {
-            return true;
-        }
-    }
-
-    return false;
+    const dirs = [...(instance?.config?.ignoreDirs || []), ...(adioRc?.ignoreDirs || [])];
+    return dirs.some(dir => path.includes(dir));
 };
 
-export default ({ dir, instance, adioRc }) => {
-    const fileExtensions = ["js", "ts", "tsx"];
-    const paths = [];
-    for (let i = 0; i < fileExtensions.length; i++) {
-        let fileExtension = fileExtensions[i];
-        paths.push(
-            ...globSync(dir + `/**/*.${fileExtension}`, {
-                sort: true
-            }).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
-        );
-    }
+export default async ({ dir, instance, adioRc }) => {
+    const paths = (await glob(dir + "/**/*.{js,ts,tsx}")).filter(
+        path => !isIgnoredPath({ path, instance, adioRc })
+    );
 
+    const traverseConfig = adioRc?.traverse ?? instance?.config?.traverse;
+
+    const results = await Promise.all(
+        paths.map(async path => {
+            const src = await readFile(path, "utf8");
+            return parse({ path, src, config: { traverse: traverseConfig } });
+        })
+    );
+
+    const seen = new Set();
     const deps = [];
-    paths.forEach(path => {
-        if (isIgnoredPath({ path, instance, adioRc })) {
-            return true;
+    for (const names of results) {
+        for (const name of names) {
+            if (!seen.has(name)) {
+                seen.add(name);
+                deps.push(name);
+            }
         }
-
-        const src = fs.readFileSync(path, "utf8");
-        const importsRequires = parse({
-            path,
-            src,
-            config: {
-                parser: {
-                    ...get(adioRc, "parser", get(instance, "config.parser", {})),
-                    // include commonly needed plugins
-                    plugins: defaultParserPlugins(
-                        get(adioRc, "parser.plugins", get(instance, "config.parser.plugins", []))
-                    )
-                },
-                traverse: get(adioRc, "traverse", get(instance, "config.traverse"))
-            }
-        });
-
-        importsRequires.forEach(name => {
-            // is relative import?
-            if (!name || name.startsWith(".")) {
-                return true;
-            }
-
-            // already included in deps?
-            if (deps.includes(name)) {
-                return true;
-            }
-
-            deps.push(name);
-        });
-    });
-
-    return deps;
+    }
+    return deps.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
 };

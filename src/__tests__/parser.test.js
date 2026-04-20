@@ -1,6 +1,7 @@
 import parse from "../utils/parse.js";
 import mockImports from "./mocks/multiple.imports.js";
 import mockRequires from "./mocks/multiple.requires.js";
+import mockDynamicImports from "./mocks/multiple.dynamic-imports.js";
 
 test("must correctly return all imported packages", () => {
     const packages = parse({ src: mockImports });
@@ -28,4 +29,10 @@ test("must correctly return all required packages", () => {
         "@commodo/fields",
         "@commodo/fields-storage"
     ]);
+});
+
+test("must correctly return all dynamically imported packages", () => {
+    const packages = parse({ src: mockDynamicImports });
+
+    expect(packages).toEqual(["react", "lodash", "@scope/package"]);
 });
