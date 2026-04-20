@@ -78,7 +78,7 @@ describe("monorepo tests", () => {
                 errors: {
                     count: 3,
                     deps: {
-                        src: ["sanitize-filename", "repropose"],
+                        src: ["repropose", "sanitize-filename"],
                         dependencies: ["lodash"],
                         devDependencies: [],
                         peerDependencies: []

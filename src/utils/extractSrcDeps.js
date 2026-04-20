@@ -1,56 +1,35 @@
-import { globSync } from "glob";
-import fs from "fs";
+import { glob } from "glob";
+import { readFile } from "node:fs/promises";
 import parse from "./parse.js";
 
 const isIgnoredPath = ({ path, instance, adioRc }) => {
-    let dirs = instance?.config?.ignoreDirs || [];
-    for (let i = 0; i < dirs.length; i++) {
-        if (path.includes(dirs[i])) return true;
-    }
-    dirs = adioRc?.ignoreDirs || [];
-    for (let i = 0; i < dirs.length; i++) {
-        if (path.includes(dirs[i])) return true;
-    }
-    return false;
+    const dirs = [...(instance?.config?.ignoreDirs || []), ...(adioRc?.ignoreDirs || [])];
+    return dirs.some(dir => path.includes(dir));
 };
 
-export default ({ dir, instance, adioRc }) => {
-    const fileExtensions = ["js", "ts", "tsx"];
-    const paths = [];
-    for (let i = 0; i < fileExtensions.length; i++) {
-        let fileExtension = fileExtensions[i];
-        paths.push(
-            ...globSync(dir + `/**/*.${fileExtension}`, {
-                sort: true
-            }).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
-        );
-    }
+export default async ({ dir, instance, adioRc }) => {
+    const paths = (await glob(dir + "/**/*.{js,ts,tsx}")).filter(
+        path => !isIgnoredPath({ path, instance, adioRc })
+    );
 
+    const traverseConfig = adioRc?.traverse ?? instance?.config?.traverse;
+
+    const results = await Promise.all(
+        paths.map(async path => {
+            const src = await readFile(path, "utf8");
+            return parse({ path, src, config: { traverse: traverseConfig } });
+        })
+    );
+
+    const seen = new Set();
     const deps = [];
-    paths.forEach(path => {
-        if (isIgnoredPath({ path, instance, adioRc })) {
-            return true;
+    for (const names of results) {
+        for (const name of names) {
+            if (!seen.has(name)) {
+                seen.add(name);
+                deps.push(name);
+            }
         }
-
-        const src = fs.readFileSync(path, "utf8");
-        const importsRequires = parse({
-            path,
-            src,
-            config: {
-                traverse: adioRc?.traverse ?? instance?.config?.traverse
-            }
-        });
-
-        importsRequires.forEach(name => {
-            if (!name || name.startsWith(".")) {
-                return true;
-            }
-            if (deps.includes(name)) {
-                return true;
-            }
-            deps.push(name);
-        });
-    });
-
-    return deps;
+    }
+    return deps.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
 };
