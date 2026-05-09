@@ -11,12 +11,12 @@
 | Node.js | >=20 | Runtime |
 | Yarn | 4.13.0 (Berry) | Package manager |
 | Jest | ^30 | Test runner |
-| ESLint | ^8 | Linting (`.eslintrc.cjs` — legacy config format) |
-| Prettier | ^3 | Formatting |
+| oxlint | ^1 | Linting (`.oxlintrc.json`) |
+| oxfmt | ^0.48 | Formatting (`.oxfmtrc.json`) |
 | oxc-parser | ^0.129 | Fast JS/TS AST parser for dep extraction |
 | semantic-release | ^25 | Automated versioning and npm publishing |
 
-Package type is `"type": "module"` — all source files use ESM (`import`/`export`). The ESLint config is CJS (`.eslintrc.cjs`) because ESLint's config loader requires CJS in ESM packages.
+Package type is `"type": "module"` — all source files use ESM (`import`/`export`).
 
 ## Source Layout
 
@@ -62,10 +62,8 @@ export default {
 |---------|-------------|
 | `yarn test` | Run Jest (requires `--experimental-vm-modules` — set via `NODE_OPTIONS` in the script) |
 | `yarn test:coverage` | Run tests with coverage report (lcov + html) |
-| `yarn lint` | Run ESLint on `src/` |
-| `yarn lint:fix` | Auto-fix ESLint issues |
-| `yarn prettier` | Check formatting across `**/*.{js,json}` |
-| `yarn format` | Fix formatting (runs `prettier:fix`) |
+| `yarn lint` | Run oxlint on `src/` |
+| `yarn format` | Check formatting with oxfmt on `src/` (use `oxfmt src/` to fix) |
 
 ## CI Workflows
 
@@ -86,17 +84,17 @@ Commit messages must follow [Conventional Commits](https://www.conventionalcommi
 ## Code Conventions
 
 - **Commits**: Conventional Commits (`feat:`, `fix:`, `chore:`, `docs:`, etc.)
-- **Formatting**: Prettier — double quotes, 4-space indent, semicolons (see `.prettierrc.js`)
-- **Linting**: ESLint `eslint:recommended` + custom indent/quotes/semi rules (see `.eslintrc.cjs`)
-- **Pre-commit**: husky + lint-staged — runs prettier + eslint + related jest tests on staged `.js` files
+- **Formatting**: oxfmt — double quotes, 4-space indent, no trailing commas (see `.oxfmtrc.json`)
+- **Linting**: oxlint with `curly` off and no-unused-vars as warn (see `.oxlintrc.json`)
+- **Pre-commit**: husky + lint-staged — runs oxfmt + oxlint --fix + related jest tests on staged `.js` files
 
 ## Important Files
 
 | File | Purpose |
 |------|---------|
 | `.adiorc.js` | adio self-check config |
-| `.eslintrc.cjs` | ESLint config (CJS, legacy format) |
-| `.prettierrc.js` | Prettier config |
+| `.oxlintrc.json` | oxlint config |
+| `.oxfmtrc.json` | oxfmt config |
 | `.releaserc.js` | semantic-release branches config |
 | `jest.config.js` | Jest config (no transform, coverage from `src/**/*.js`) |
 | `.yarnrc.yml` | Yarn Berry config (node-modules linker) |

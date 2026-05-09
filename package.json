@@ -45,11 +45,8 @@
         "release": "yarn semantic-release",
         "lint-staged": "lint-staged",
         "semantic-release": "semantic-release",
-        "prettier": "prettier --check \"**/*.{js,json}\"",
-        "prettier:fix": "prettier --write \"**/*.{js,json}\"",
-        "format": "yarn prettier:fix",
-        "lint": "eslint src/",
-        "lint:fix": "eslint --fix src/"
+        "format": "oxfmt --check src/",
+        "lint": "oxlint src/"
     },
     "husky": {
         "hooks": {
@@ -59,8 +56,8 @@
     "bin": "src/bin/adio.js",
     "lint-staged": {
         "**/*.js": [
-            "prettier --write",
-            "eslint --fix",
+            "oxfmt",
+            "oxlint --fix",
             "jest --findRelatedTests",
             "git add"
         ]
@@ -72,12 +69,12 @@
         "oxc-parser": "^0.129.0"
     },
     "devDependencies": {
-        "eslint": "^8.57.0",
         "extract-zip": "^2.0.1",
         "husky": "^9.1.7",
         "jest": "^30.4.2",
         "lint-staged": "^17.0.3",
-        "prettier": "^3.8.3",
+        "oxfmt": "^0.48.0",
+        "oxlint": "^1.63.0",
         "semantic-release": "^25.0.3"
     },
     "packageManager": "yarn@4.13.0"
