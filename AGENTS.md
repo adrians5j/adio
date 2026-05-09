@@ -23,17 +23,17 @@ Package type is `"type": "module"` — all source files use ESM (`import`/`expor
 ```
 src/
   Adio.js              # Main class — package scanning, worker dispatch, error aggregation
-  index.js             # Public API entry point
-  bin/adio.js          # CLI entry point (invoked as the `adio` command)
+  index.js             # Public API entry point (re-exports Adio)
+  bin/adio.js          # CLI entry point — parses args, calls Adio.test(), prints results
   utils/
-    extractSrcDeps.js  # Extracts import/require names from source files (custom traverse path)
-    parse.js           # Parses a single file with oxc-parser, returns dep names
-    parseWorker.js     # Worker thread wrapper around parse.js
-    testPackage.js     # Reads package.json deps and applies ignore rules
+    extractSrcDeps.js  # Single-threaded dep extraction; used when a custom `traverse` fn is set
+    parse.js           # Parses one file with oxc-parser; supports custom `traverse` hook
+    parseWorker.js     # Worker thread that batches parse calls (no custom traverse support)
+    testPackage.js     # Extracts deps from package.json and evaluates ignore rules
   __tests__/
-    parser.test.js     # Unit tests for dep extraction logic
-    monorepo.test.js   # Integration test using a zipped monorepo fixture
-    mocks/             # Sample JS files and a monorepo.zip fixture
+    parser.test.js     # Unit tests for import/require/dynamic-import parsing
+    monorepo.test.js   # Integration test: extracts monorepo.zip, runs Adio against it
+    mocks/             # JS fixtures (imports, requires, dynamic-imports) + monorepo.zip
 ```
 
 `Adio.test()` runs in four phases:
@@ -55,6 +55,13 @@ export default {
     packages: ["./"]
 };
 ```
+
+Config keys:
+- `packages` / `package` — glob patterns for package directories to scan
+- `ignoreDirs` — directory name fragments to skip (merged with the default `["node_modules"]`)
+- `ignore.src` — dep names to ignore when checking source imports (array or `true`)
+- `ignore.dependencies` / `ignore.devDependencies` / `ignore.peerDependencies` — analogous for package.json sections
+- `traverse` — `({ node, isRelative, push }) => void` — custom AST hook called for every node; call `push(specifier)` to register imports the default walker would miss. When set, the single-threaded `extractSrcDeps` path is used instead of workers.
 
 ## Dev Commands
 
