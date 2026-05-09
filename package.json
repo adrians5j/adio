@@ -47,7 +47,9 @@
         "semantic-release": "semantic-release",
         "prettier": "prettier --check \"**/*.{js,json}\"",
         "prettier:fix": "prettier --write \"**/*.{js,json}\"",
-        "format": "yarn prettier:fix"
+        "format": "yarn prettier:fix",
+        "lint": "eslint src/",
+        "lint:fix": "eslint --fix src/"
     },
     "husky": {
         "hooks": {
@@ -70,6 +72,7 @@
         "oxc-parser": "^0.129.0"
     },
     "devDependencies": {
+        "eslint": "^8.57.0",
         "extract-zip": "^2.0.1",
         "husky": "^9.1.7",
         "jest": "^30.4.2",

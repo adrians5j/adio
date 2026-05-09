@@ -3,7 +3,6 @@ import path from "node:path";
 import { cpus } from "node:os";
 import { Worker } from "node:worker_threads";
 import { fileURLToPath } from "node:url";
-import fs from "node:fs";
 import { readFile } from "node:fs/promises";
 import { extractDepsFromPackageJson, isIgnoredDep } from "./utils/testPackage.js";
 import extractSrcDeps from "./utils/extractSrcDeps.js";
@@ -29,7 +28,9 @@ async function loadLocalAdioRc(dir, packageJson) {
                 return (await import(filepath)).default;
             }
             return JSON.parse(await readFile(filepath, "utf8"));
-        } catch {}
+        } catch (_) {
+            // file doesn't exist or can't be parsed — try next candidate
+        }
     }
     return null;
 }
