@@ -1,10 +1,7 @@
 # adio
-[![Build Status](https://travis-ci.org/doitadrian/adio.svg?branch=master)](https://travis-ci.org/doitadrian/adio)
-[![Coverage Status](https://coveralls.io/repos/github/doitadrian/adio/badge.svg?branch=master)](https://coveralls.io/github/doitadrian/adio?branch=master)
+[![CI](https://github.com/adrians5j/adio/actions/workflows/ci.yml/badge.svg)](https://github.com/adrians5j/adio/actions/workflows/ci.yml)
 [![](https://img.shields.io/npm/dw/adio.svg)](https://www.npmjs.com/package/adio) 
 [![](https://img.shields.io/npm/v/adio.svg)](https://www.npmjs.com/package/adio)
-[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
   
 `adio` (all-dependencies-in-order) is a small library that checks your code
@@ -54,22 +51,22 @@ directory...
 ```
 
 and then running the `adio` command in the same directory, we can 
-achieve the same effect as by manually running the previsuly shown 
+achieve the same effect as by manually running the previously shown 
 `adio --packages "components/*" --packages "packages/*"` command.
 
 This way will also make it easier to pass in additional config parameters.
 
 ## Additional configuration parameters
 
-- **ignoreDirs**: Array containing directories to ignore. By default, `adio` ignores `['node_modules']`
-- **ignore**: Object containing dependencies for `adio` to ignore.
-  - **src**: dependencies to ignore in source files. This can be an array of strings or simply `true` to ignore checking all deps in source files
-  - **dependencies**: ignore `dependencies` in `package.json`. This can be an array of strings, to ignore certain deps, or simply `true` to ignore checking all `dependencies` from `package.json`
-  - **devDependencies**: ignore `devDependencies` in `package.json`. This can be an array of strings, to ignore certain deps, or simply `true` to ignore checking all `devDependencies` from `package.json`
-  - **peerDependencies**: ignore `peerDependencies` in `package.json`. This can be an array of strings, to ignore certain deps, or simply `true` to ignore checking all `peerDependencies` from `package.json`
-- **parser**: any options to pass to `@babel/parser` see [here](https://babeljs.io/docs/en/babel-parser#options) for available options
+- **ignoreDirs**: Array of directories to ignore. Defaults to `['node_modules']`.
+- **ignore**: Object controlling which dependencies to skip.
+  - **src**: deps to ignore in source files — array of strings, or `true` to skip all src checks
+  - **dependencies**: ignore listed `dependencies` — array of strings or `true`
+  - **devDependencies**: ignore listed `devDependencies` — array of strings or `true`
+  - **peerDependencies**: ignore listed `peerDependencies` — array of strings or `true`
+- **traverse**: custom AST traversal function `({ node, isRelative, push }) => void`. Called for every AST node; call `push(specifier)` to register additional imports that adio's default traversal wouldn't catch.
 
-A more comprehensive `.adiorc` might look like this:
+A more comprehensive `.adiorc.js` might look like this:
 
 ```json
 {
@@ -79,9 +76,6 @@ A more comprehensive `.adiorc` might look like this:
     "src": ["path", "url", "http"],
     "devDependencies": true,
     "peerDependencies": true
-  },
-  "parser": {
-    "plugins": ["typescript", "optionalChaining", "numericSeparator", "classProperties"]
   }
 }
 ```

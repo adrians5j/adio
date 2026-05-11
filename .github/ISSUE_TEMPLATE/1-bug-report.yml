@@ -1,0 +1,38 @@
+name: "Bug report"
+labels: "bug"
+description: Report an issue you have spotted
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting an issue. Please fill in as much of the form below as you're able to.
+  - type: input
+    attributes:
+      label: adio version
+      description: Output of `npx adio --version`
+  - type: input
+    attributes:
+      label: Node.js version
+      description: Output of `node --version`
+  - type: input
+    attributes:
+      label: Operating System
+  - type: textarea
+    attributes:
+      label: Steps to reproduce
+      description: Provide unambiguous steps to reproduce the bug.
+  - type: textarea
+    attributes:
+      label: Expected behavior
+      description: What should happen?
+  - type: textarea
+    attributes:
+      label: Actual behavior
+      description: What happens instead? Include any error output.
+  - type: textarea
+    attributes:
+      label: Relevant config
+      description: Paste your `.adiorc.js` / `.adiorc.json` or `adio` key from `package.json` if relevant.
+  - type: textarea
+    attributes:
+      label: Additional information
