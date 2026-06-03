@@ -1,6 +1,6 @@
 import path from "node:path";
 import { rm } from "node:fs/promises";
-import extract from "extract-zip";
+import { execFileSync } from "node:child_process";
 import { Adio } from "../index.js";
 import { getDirname } from "./getDirname.js";
 const __dirname = getDirname(import.meta.url);
@@ -11,9 +11,8 @@ describe("monorepo tests", () => {
     beforeAll(async () => {
         await rm(MONOREPO, { recursive: true, force: true, maxRetries: 3 });
 
-        await extract(path.join(__dirname, "/mocks/monorepo.zip"), {
-            dir: path.join(__dirname, "/mocks")
-        });
+        const mocksDir = path.join(__dirname, "/mocks");
+        execFileSync("unzip", ["-o", path.join(mocksDir, "monorepo.zip"), "-d", mocksDir]);
     }, 30000);
 
     afterAll(async () => {
