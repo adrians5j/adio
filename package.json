@@ -66,15 +66,15 @@
         "chalk": "^5.6.2",
         "cosmiconfig": "^9.0.1",
         "glob": "^13.0.6",
-        "oxc-parser": "^0.129.0"
+        "oxc-parser": "^0.133.0"
     },
     "devDependencies": {
         "extract-zip": "^2.0.1",
         "husky": "^9.1.7",
         "jest": "^30.4.2",
-        "lint-staged": "^17.0.3",
-        "oxfmt": "^0.48.0",
-        "oxlint": "^1.63.0",
+        "lint-staged": "^17.0.6",
+        "oxfmt": "^0.52.0",
+        "oxlint": "^1.67.0",
         "semantic-release": "^25.0.3"
     },
     "packageManager": "yarn@4.16.0"
