@@ -69,7 +69,6 @@
         "oxc-parser": "^0.133.0"
     },
     "devDependencies": {
-        "extract-zip": "^2.0.1",
         "husky": "^9.1.7",
         "jest": "^30.4.2",
         "lint-staged": "^17.0.6",
