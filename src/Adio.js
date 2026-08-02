@@ -6,6 +6,9 @@ import { fileURLToPath } from "node:url";
 import { readFile } from "node:fs/promises";
 import { extractDepsFromPackageJson, isIgnoredDep } from "./utils/testPackage.js";
 import extractSrcDeps from "./utils/extractSrcDeps.js";
+import debug from "debug";
+
+const log = debug("adio:Adio");
 
 const WORKER_PATH = path.join(path.dirname(fileURLToPath(import.meta.url)), "utils/parseWorker.js");
 const WORKER_COUNT = Math.min(cpus().length, 8);
@@ -93,6 +96,7 @@ export class Adio {
         });
         packages.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
 
+        log("discovered %d packages", packages.length);
         if (packages.length === 0) {
             throw new Error(`No packages detected.
 Did you specify the correct path via the --package or --packages params?
@@ -101,6 +105,7 @@ Hint: you can also specify these params via the .adiorc.js config or package.jso
         }
 
         // Phase 1: read all package.json + configs + glob source files in parallel
+        log("phase 1: reading package configs and globbing source files");
         const packageData = await Promise.all(
             packages.map(async dir => {
                 let packageJson;
@@ -130,6 +135,7 @@ Hint: you can also specify these params via the .adiorc.js config or package.jso
         const chunks = Array.from({ length: WORKER_COUNT }, (_, i) =>
             allPaths.slice(i * chunkSize, (i + 1) * chunkSize)
         ).filter(c => c.length > 0);
+        log("phase 2: dispatching %d files to %d workers", allPaths.length, chunks.length);
 
         const workerResults = await Promise.all(chunks.map(runWorker));
 
@@ -144,6 +150,7 @@ Hint: you can also specify these params via the .adiorc.js config or package.jso
 
         // Phase 3: for packages with custom traverse, fall back to main thread
         const fallbackPackages = packageData.filter(p => p.hasCustomTraverse);
+        log("phase 3: running custom traverse fallback for %d packages", fallbackPackages.length);
         if (fallbackPackages.length > 0) {
             await Promise.all(
                 fallbackPackages.map(async p => {
@@ -159,6 +166,7 @@ Hint: you can also specify these params via the .adiorc.js config or package.jso
         }
 
         // Phase 4: aggregate deps per package and build results
+        log("phase 4: aggregating results");
         return packageData.map(
             ({ dir, packageJson, adioRc, paths, hasCustomTraverse, srcDeps }) => {
                 let finalSrcDeps;
