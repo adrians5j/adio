@@ -225,11 +225,14 @@ Hint: you can also specify these params via the .adiorc.js config or package.jso
         }
 
         if (typeof multiplePackages === "string") {
-            !normalizedPackagesList.includes(multiplePackages) &&
+            if (!normalizedPackagesList.includes(multiplePackages)) {
                 normalizedPackagesList.push(multiplePackages);
+            }
         } else if (Array.isArray(multiplePackages)) {
             multiplePackages.forEach(item => {
-                !normalizedPackagesList.includes(item) && normalizedPackagesList.push(item);
+                if (!normalizedPackagesList.includes(item)) {
+                    normalizedPackagesList.push(item);
+                }
             });
         }
 

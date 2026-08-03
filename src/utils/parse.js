@@ -35,8 +35,9 @@ export default ({ src, path = "file.js", config = {} }) => {
             } else if (node.type === "CallExpression" && node.callee?.name === "require") {
                 push(node.arguments?.[0]?.value);
             }
-            typeof traverse === "function" &&
+            if (typeof traverse === "function") {
                 traverse({ node, isRelative: v => v.startsWith("."), push });
+            }
         });
         return Object.keys(dependencies);
     } catch (e) {
