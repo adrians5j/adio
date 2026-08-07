@@ -65,6 +65,7 @@
     "dependencies": {
         "chalk": "^6.0.0",
         "cosmiconfig": "^9.0.2",
+        "debug": "^4.4.0",
         "glob": "^13.0.6",
         "oxc-parser": "^0.142.0"
     },
